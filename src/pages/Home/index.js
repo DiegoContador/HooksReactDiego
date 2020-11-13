@@ -1,43 +1,64 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import React, { useState } from "react";
+import {
+  Container,
+  Grid,
+  Typography,
+  Card,
+  TextField,
+  Button,
+} from "@material-ui/core";
+import styles from "./style";
 
-import { getDemoRequest } from '../../redux/actions/demoActions';
+export default ({ history }) => {
+  const [searchText, setSearchText] = useState("");
+  const classes = styles();
+  const handleSearchTextChange = (event) => {
+    setSearchText(event.target.value);
+    console.log(setSearchText);
+  };
 
-import User from '../../components/User';
+  const handleCleanTextClick = (event) => {
+    setSearchText("");
+  };
+  const handleSearchTextClick = (event) => {
+    history.push(`/results?movieName=${searchText}`);
+  };
 
-class Home extends Component {
-	componentWillMount() {
-		this.props.getDemoRequest('hey');
-	}
-	render() {
-		const { users } = this.props;
-
-		let items = [];
-		if (typeof users !== 'undefined') {
-			items = users.map((value, index) => {
-				return <User key={index} {...value} />;
-			});
-		}
-		return <div>{items}</div>;
-	}
-}
-
-const mapDispatchToProps = (dispatch, props) => {
-	return {
-		getDemoRequest: payload => {
-			dispatch(getDemoRequest(payload));
-		}
-	};
+  return (
+    <Container className={classes.container}>
+      <Typography>Aquí puede buscar películas en el API de IMDB con HOOKS the REACT.js</Typography>
+      <Card className={classes.cardContainer}>
+        <Grid container className={classes.titleGridContainer}>
+          <Grid>
+            <Typography className={classes.title}> Bienvenido</Typography>{" "}
+          </Grid>{" "}
+          <Grid>
+            <label> Icono </label>{" "}
+          </Grid>{" "}
+        </Grid>{" "}
+        <TextField
+          value={searchText}
+          placeholder="Buscar..."
+          className={classes.textFileSearch}
+          onChange={handleSearchTextChange}
+        />{" "}
+        <Grid className={classes.buttonsContainer}>
+          <Button variant="contained" onClick={handleCleanTextClick}>
+            {" "}
+            Limpiar{" "}
+          </Button>{" "}
+          <Button
+            variant="contained"
+            className={classes.searchButton}
+            color="primary"
+            size="large"
+            onClick={handleSearchTextClick}
+          >
+            {" "}
+            Buscar{" "}
+          </Button>{" "}
+        </Grid>{" "}
+      </Card>{" "}
+    </Container>
+  );
 };
-const mapStateToProps = state => {
-	return {
-		users: state.demoReducer[0]
-	};
-};
-
-Home.propTypes = {
-	dispatch: PropTypes.func
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
